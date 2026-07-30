@@ -18,7 +18,7 @@ The pipeline downloads monthly TLC datasets for Yellow and Green taxis from the 
 
 - Standardize column names (`pickup_datetime`, `dropoff_datetime`).
 - Added derived columns: `pickup_hour`, `pickup_dayofweek`.
-- Addded a `taxi_type` column to combine Yellow and Green data under a single schema.
+- Added a `taxi_type` column to combine Yellow and Green data under a single schema.
 
 
 ### 3. Load 
@@ -31,14 +31,14 @@ And then into Avro format.
 
 **XLSX format:** I can totally reuse my current pipeline to produce an XLSX file since I’m already working with pandas DataFrames. After I’ve combined and cleaned my Parquet data, I just export it to Excel using `df.to_excel()`. 
 
-However, compared to Parquet or Avro, Excel is nowhere near as efficient. *Parquet and Avro are designed for big data, fast querying, compression, and schema evolution* while XLSX is heavier and can be slow to open with huge datasets. This happend to me when I tried cnverting my dataframe to excel. I had to switch to CSV due to large size. So, if my colleague wants millions of rows, performance might be a concern. But if he’s just doing familiar Excel tricks on a smaller sample it’s totally fine.
+However, compared to Parquet or Avro, Excel is nowhere near as efficient. *Parquet and Avro are designed for big data, fast querying, compression, and schema evolution* while XLSX is heavier and can be slow to open with huge datasets. This happened to me when I tried converting my dataframe to excel. I had to switch to CSV due to large size. So, if my colleague wants millions of rows, performance might be a concern. But if he’s just doing familiar Excel tricks on a smaller sample it’s totally fine.
 
 
 ### Queries
 
 I used DuckDB to run SQL queries directly on the Parquet file for correctness and exploration:
 
-- Average trip distanc by taxi type and hour
+- Average trip distance by taxi type and hour
 - Day of week with the lowest single rider trips in 2019 & 2020
 - Top 3 busiest hours
 
@@ -50,7 +50,7 @@ FROM trips
 GROUP BY taxi_type, pickup_hour
 ORDER BY taxi_type, pickup_hour;
 
--- day of the week in 2019 and 2020 with lowest singel rider trips
+-- day of the week in 2019 and 2020 with lowest single rider trips
 SELECT pickup_dayofweek, COUNT(*) AS single_rider_trips
 FROM trips
 WHERE passenger_count = 1 AND EXTRACT(YEAR FROM pickup_datetime) IN (2019, 2020)
@@ -197,7 +197,7 @@ I used Cron for setting schedules on Linux.
    ```bash
    crontab -e
    ```
-   The data is released every six months according to the TLC’s schedul:
+   The data is released every six months according to the TLC’s schedule:
    ```bash
    0 2 1 9 * /usr/bin/python3 /mnt/c/Users/murva/Documents/venturedata_task/script.py >> /mnt/c/Users/murva/Documents/venturedata_task/logs/pipeline_sept.log 2>&1
 
